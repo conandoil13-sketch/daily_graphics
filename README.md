@@ -179,8 +179,7 @@ Settings -> Pages -> Deploy from a branch -> main / root
 로딩 화면은 다음 파일이 있으면 로고로 사용합니다.
 
 ```txt
-assets/logo.svg
+assets/logos.svg
 ```
 
 파일이 없으면 큰 `G` 텍스트를 폴백으로 표시합니다.
-
