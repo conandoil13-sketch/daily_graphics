@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f7f7f4" />
+    <title>Daily Graphic Prototype</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="splash-screen" id="splash-screen" aria-label="앱 로딩 중">
+      <div class="splash-logo" aria-hidden="true">
+        <img data-logo-src="./assets/logo.svg" alt="" />
+        <span>G</span>
+      </div>
+    </div>
+
+    <main class="phone-shell" aria-label="Daily graphic prototype">
+      <section class="app-screen">
+        <div class="app-content">
+          <header class="app-header">
+            <div>
+              <p class="eyebrow">Mon 25 May</p>
+              <h1>오늘의 기록</h1>
+            </div>
+            <button class="icon-button" type="button" aria-label="설정">
+              <span aria-hidden="true">◎</span>
+            </button>
+          </header>
+
+          <div class="view active" data-view="record">
+            <section class="output-panel" aria-label="그래픽 출력 미리보기">
+              <div class="output-meta">
+                <span>1000 x 1000</span>
+                <span>seed 0525</span>
+              </div>
+              <div class="preview-square">
+                <canvas id="preview-canvas" class="preview-canvas" width="1000" height="1000" aria-label="오늘의 그래픽 출력"></canvas>
+                <div class="preview-grid" aria-hidden="true"></div>
+                <div class="preview-mark">
+                  <span>LOG</span>
+                  <strong>00</strong>
+                </div>
+              </div>
+            </section>
+
+            <section class="composer" aria-label="일상 기록 입력">
+              <div class="section-heading">
+                <h2>새 기록</h2>
+                <button class="text-button" type="button" id="reset-button">초기화</button>
+              </div>
+
+              <div class="field-group">
+                <label for="category">행위 카테고리</label>
+                <div class="segmented" id="category-options">
+                  <button class="segment active" type="button" data-category="이동">이동</button>
+                  <button class="segment" type="button" data-category="식사">식사</button>
+                  <button class="segment" type="button" data-category="대화">대화</button>
+                  <button class="segment" type="button" data-category="작업">작업</button>
+                  <button class="segment" type="button" data-category="휴식">휴식</button>
+                  <button class="segment" type="button" data-category="상태">상태</button>
+                </div>
+                <input id="category" type="hidden" value="이동" />
+              </div>
+
+              <div class="field-row">
+                <div class="field-group grow">
+                  <label for="metric-value">수치적 데이터</label>
+                  <input id="metric-value" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="예: 7324" />
+                </div>
+                <div class="field-group unit-field">
+                  <label for="metric-unit">단위</label>
+                  <select id="metric-unit">
+                    <option value="steps">걸음</option>
+                    <option value="min">분</option>
+                    <option value="m">m</option>
+                    <option value="km">km</option>
+                    <option value="count">횟수</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="field-group">
+                <label for="mood">감정상태 <span>선택</span></label>
+                <select id="mood">
+                  <option value="">선택 안 함</option>
+                  <option>차분함</option>
+                  <option>피곤함</option>
+                  <option>기쁨</option>
+                  <option>불안</option>
+                  <option>복잡함</option>
+                  <option>무감각</option>
+                </select>
+              </div>
+
+              <div class="action-row">
+                <button class="primary-action" type="button" id="add-entry-button">기록 추가</button>
+                <button class="secondary-action" type="button" id="finish-day-button">하루를 마침</button>
+              </div>
+            </section>
+
+            <section class="entry-list" aria-label="기록 목록">
+              <div class="section-heading compact">
+                <h2>입력된 항목</h2>
+                <span id="empty-state-label">대기 중</span>
+              </div>
+              <div id="entries" class="entries">
+                <p class="empty-state">행위, 수치, 선택 감정을 입력하면 이곳에 쌓입니다.</p>
+              </div>
+            </section>
+          </div>
+
+          <section class="view" data-view="output" aria-label="출력 아카이브">
+            <div class="view-header">
+              <p class="eyebrow">Archive</p>
+              <h2>출력 달력</h2>
+            </div>
+
+            <div class="calendar-toolbar">
+              <button class="icon-button compact-icon" type="button" data-calendar-prev aria-label="이전 기간">‹</button>
+              <div>
+                <strong id="calendar-title">2026년 5월</strong>
+                <span id="calendar-subtitle">대한민국 기준</span>
+              </div>
+              <button class="icon-button compact-icon" type="button" data-calendar-next aria-label="다음 기간">›</button>
+            </div>
+
+            <div class="view-switch" role="tablist" aria-label="달력 보기 단위">
+              <button class="view-option active" type="button" data-calendar-view="year">년</button>
+              <button class="view-option" type="button" data-calendar-view="month">월</button>
+              <button class="view-option" type="button" data-calendar-view="week">주</button>
+              <button class="view-option" type="button" data-calendar-view="day">일</button>
+            </div>
+
+            <div id="calendar-body" class="calendar-body"></div>
+
+            <section class="selected-output">
+              <div class="section-heading compact">
+                <h2 id="selected-output-title">선택한 날짜</h2>
+                <span id="selected-output-count">0 outputs</span>
+              </div>
+              <div id="selected-output-detail" class="output-detail"></div>
+            </section>
+          </section>
+
+          <section class="view" data-view="profile" aria-label="내정보">
+            <div class="view-header">
+              <p class="eyebrow">Profile</p>
+              <h2>내정보</h2>
+            </div>
+
+            <div id="profile-list-panel">
+              <section class="profile-card">
+                <div class="profile-avatar" aria-hidden="true">◎</div>
+                <div>
+                  <strong>Local profile</strong>
+                  <span>Asia/Seoul · browser storage</span>
+                </div>
+              </section>
+
+              <section class="profile-stats">
+                <div>
+                  <span class="summary-label">outputs</span>
+                  <strong id="profile-days">0</strong>
+                </div>
+                <div>
+                  <span class="summary-label">draft logs</span>
+                  <strong id="profile-entries">0</strong>
+                </div>
+              </section>
+
+              <section class="settings-section">
+                <h3>계정</h3>
+                <div class="settings-list">
+                  <button type="button" data-settings-panel="profile-name">
+                    <span>프로필 이름</span>
+                    <strong>Local profile</strong>
+                  </button>
+                  <button type="button" data-settings-panel="timezone">
+                    <span>시간대</span>
+                    <strong>대한민국 표준시</strong>
+                  </button>
+                </div>
+              </section>
+
+              <section class="settings-section">
+                <h3>출력</h3>
+                <div class="settings-list">
+                  <button type="button" data-settings-panel="image-size">
+                    <span>이미지 크기</span>
+                    <strong>1000 x 1000</strong>
+                  </button>
+                  <button type="button" data-settings-panel="seed-rule">
+                    <span>시드 규칙</span>
+                    <strong>날짜 + 기록값</strong>
+                  </button>
+                  <button type="button" data-settings-panel="color-rule">
+                    <span>색상 규칙</span>
+                    <strong>감정 범위 기반</strong>
+                  </button>
+                </div>
+              </section>
+
+              <section class="settings-section">
+                <h3>데이터</h3>
+                <div class="settings-list">
+                  <button type="button" data-settings-panel="draft-storage">
+                    <span>임시 기록 저장</span>
+                    <strong>로컬</strong>
+                  </button>
+                  <button type="button" data-settings-panel="archive-storage">
+                    <span>그래픽 아카이브</span>
+                    <strong>브라우저 저장소</strong>
+                  </button>
+                  <button type="button" data-settings-panel="export-data">
+                    <span>데이터 내보내기</span>
+                    <strong>준비 중</strong>
+                  </button>
+                </div>
+              </section>
+
+              <section class="settings-section">
+                <h3>권한</h3>
+                <div class="settings-list">
+                  <button type="button" data-settings-panel="location">
+                    <span>위치</span>
+                    <strong>사용 안 함</strong>
+                  </button>
+                  <button type="button" data-settings-panel="notification">
+                    <span>알림</span>
+                    <strong>사용 안 함</strong>
+                  </button>
+                  <button type="button" data-settings-panel="health">
+                    <span>건강 데이터</span>
+                    <strong>연결 없음</strong>
+                  </button>
+                </div>
+              </section>
+
+              <section class="settings-section">
+                <h3>앱 정보</h3>
+                <div class="settings-list">
+                  <button type="button" data-settings-panel="version">
+                    <span>프로토타입 버전</span>
+                    <strong>0.1.0</strong>
+                  </button>
+                  <button type="button" data-settings-panel="deploy">
+                    <span>배포 형태</span>
+                    <strong>static web</strong>
+                  </button>
+                </div>
+              </section>
+            </div>
+
+            <section id="profile-detail-panel" class="profile-detail hidden">
+              <button class="text-button back-button" type="button" id="settings-back-button">‹ 내정보</button>
+              <p class="eyebrow" id="settings-detail-kicker">Settings</p>
+              <h2 id="settings-detail-title">설정</h2>
+              <div id="settings-detail-body" class="settings-detail-body"></div>
+            </section>
+          </section>
+        </div>
+
+        <nav class="bottom-tabs" aria-label="앱 내비게이션">
+          <button class="tab active" type="button" data-tab="record">
+            <span aria-hidden="true">□</span>
+            <strong>기록</strong>
+          </button>
+          <button class="tab" type="button" data-tab="output">
+            <span aria-hidden="true">◧</span>
+            <strong>출력</strong>
+          </button>
+          <button class="tab" type="button" data-tab="profile">
+            <span aria-hidden="true">≡</span>
+            <strong>내정보</strong>
+          </button>
+        </nav>
+
+        <div class="modal-backdrop hidden" id="finish-modal" role="dialog" aria-modal="true" aria-labelledby="finish-title">
+          <section class="finish-sheet">
+            <div class="section-heading compact">
+              <h2 id="finish-title">그래픽 이름</h2>
+              <button class="text-button" type="button" id="finish-cancel-button">취소</button>
+            </div>
+            <div class="field-group">
+              <label for="output-name">출력 이름</label>
+              <input id="output-name" type="text" placeholder="예: 느리게 지나간 월요일" />
+            </div>
+            <button class="primary-action finish-confirm" type="button" id="finish-confirm-button">완료 저장</button>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="./src/app.js?v=6"></script>
+  </body>
+</html>
