@@ -31,4 +31,4 @@ if (splashLogo && splashImage?.dataset.logoSrc) {
 
 window.setTimeout(() => {
   document.querySelector("#splash-screen")?.classList.add("loaded");
-}, 520);
+}, 1180);
