@@ -1,11 +1,11 @@
-import { createOutput } from "../outputService.js?v=6";
+import { createOutput } from "../outputService.js?v=8";
 import {
   getEntriesByDate,
   getKoreaTodayKey,
   saveOutput,
   setActiveDateKey,
   state,
-} from "../state.js?v=6";
+} from "../state.js?v=8";
 
 function finalizeDate(dateKey, name) {
   const entries = getEntriesByDate(dateKey);

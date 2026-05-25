@@ -8,22 +8,44 @@ const KEY_HSL = { h: 90, s: 72, l: 67 };
 const KEY_STRONG_HSL = { h: 109, s: 73, l: 56 };
 
 const MOOD_RANGES = {
+  "기쁨": [{ h: [35, 85], s: [45, 85], l: [55, 88] }],
+  "슬픔": [{ h: [205, 245], s: [24, 58], l: [24, 58] }],
+  "분노": [{ h: [350, 380], s: [62, 94], l: [34, 64] }],
+  "불안": [
+    { h: [330, 380], s: [45, 90], l: [35, 70] },
+    { h: [250, 290], s: [45, 82], l: [35, 68] },
+  ],
+  "평온": [{ h: [170, 230], s: [18, 50], l: [42, 82] }],
+  "설렘": [
+    { h: [330, 360], s: [48, 86], l: [58, 86] },
+    { h: [18, 48], s: [52, 88], l: [58, 84] },
+  ],
+  "피곤": [
+    { h: [35, 70], s: [8, 30], l: [28, 62] },
+    { h: [210, 250], s: [8, 26], l: [30, 58] },
+  ],
+  "집중": [
+    { h: [185, 220], s: [30, 62], l: [26, 54] },
+    { h: [125, 165], s: [24, 52], l: [28, 56] },
+  ],
+  "혼란": [
+    { h: [20, 70], s: [35, 80], l: [35, 78] },
+    { h: [170, 225], s: [35, 74], l: [35, 76] },
+    { h: [285, 340], s: [35, 78], l: [35, 74] },
+  ],
+  "만족": [{ h: [58, 118], s: [32, 68], l: [46, 78] }],
+  "외로움": [{ h: [200, 235], s: [10, 34], l: [32, 66] }],
+  "무감각": [{ h: [0, 360], s: [0, 12], l: [25, 78] }],
   "차분함": [{ h: [170, 230], s: [18, 50], l: [42, 82] }],
   "피곤함": [
     { h: [35, 70], s: [8, 30], l: [28, 62] },
     { h: [210, 250], s: [8, 26], l: [30, 58] },
-  ],
-  "기쁨": [{ h: [35, 85], s: [45, 85], l: [55, 88] }],
-  "불안": [
-    { h: [330, 380], s: [45, 90], l: [35, 70] },
-    { h: [250, 290], s: [45, 82], l: [35, 68] },
   ],
   "복잡함": [
     { h: [20, 70], s: [35, 80], l: [35, 78] },
     { h: [170, 225], s: [35, 74], l: [35, 76] },
     { h: [285, 340], s: [35, 78], l: [35, 74] },
   ],
-  "무감각": [{ h: [0, 360], s: [0, 12], l: [25, 78] }],
 };
 
 const DEFAULT_RANGES = [
@@ -362,11 +384,17 @@ function applyState(grid, entry, rng, color) {
 
 function applyMood(grid, mood, rng) {
   if (!mood) return grid;
-  if (mood === "차분함") return applyMirror(grid, "vertical");
-  if (mood === "피곤함") return applyVectorDrift(grid, "DOWN");
+  if (mood === "평온" || mood === "차분함") return applyMirror(grid, "vertical");
+  if (mood === "슬픔") return applyVectorDrift(applyFrameCut(grid, 50, 58, 42, false), "DOWN");
+  if (mood === "분노") return applyFlowDistort(applyStepSampler(grid, 11 + Math.floor(rng() * 5), MID), 4, 0.32);
   if (mood === "기쁨") return applyMirror(applyMirror(grid, "vertical"), "horizontal");
+  if (mood === "설렘") return applyStepSampler(applyMirror(grid, rng() > 0.5 ? "vertical" : "horizontal"), 19 + Math.floor(rng() * 10), SOFT);
+  if (mood === "피곤" || mood === "피곤함") return applyVectorDrift(grid, "DOWN");
+  if (mood === "집중") return applyVectorDrift(grid, rng() > 0.5 ? "UP" : "RIGHT");
   if (mood === "불안") return applyFlowDistort(grid, 7, 0.21);
-  if (mood === "복잡함") return applyStepSampler(grid, 17 + Math.floor(rng() * 8), MID);
+  if (mood === "혼란" || mood === "복잡함") return applyStepSampler(grid, 17 + Math.floor(rng() * 8), MID);
+  if (mood === "만족") return applyMirror(grid, "horizontal");
+  if (mood === "외로움") return applyFrameCut(grid, 50, 50, 36, false);
   if (mood === "무감각") return grid.map((cell) => (cell.active ? { ...cell, color: MID } : cell));
   return grid;
 }

@@ -1,5 +1,5 @@
-import { qsa, qs } from "../dom.js?v=6";
-import { inputMetaByCategory, setCategory, subscribe, unitsByCategory } from "../state.js?v=6";
+import { qsa, qs } from "../dom.js?v=8";
+import { inputMetaByCategory, setCategory, subscribe, unitsByCategory } from "../state.js?v=8";
 
 export function initCategorySelector() {
   const categoryInput = qs("#category");
@@ -19,6 +19,7 @@ export function initCategorySelector() {
     categoryInput.value = selectedCategory;
     unitInput.innerHTML = units.map((unit) => `<option value="${unit.value}">${unit.label}</option>`).join("");
     unitInput.value = units[0].value;
+    unitInput.dispatchEvent(new Event("change", { bubbles: true }));
     valueLabel.textContent = meta.label;
     valueInput.placeholder = meta.placeholder;
 

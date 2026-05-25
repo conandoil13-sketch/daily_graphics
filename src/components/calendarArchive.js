@@ -1,4 +1,4 @@
-import { qs, qsa } from "../dom.js?v=6";
+import { qs, qsa } from "../dom.js?v=8";
 import {
   getKoreaTodayKey,
   getOutputByDate,
@@ -7,7 +7,7 @@ import {
   setFocusedDate,
   state,
   subscribe,
-} from "../state.js?v=6";
+} from "../state.js?v=8";
 import {
   formatKoreanDate,
   formatTitle,
@@ -18,8 +18,8 @@ import {
   movePeriod,
   parseDateKey,
   toDateKey,
-} from "../calendarModel.js?v=6";
-import { downloadOutput, renderOutputToCanvas } from "../outputService.js?v=6";
+} from "../calendarModel.js?v=8";
+import { downloadOutput, renderOutputToCanvas } from "../outputService.js?v=8";
 
 function outputCount(dateKey) {
   return getOutputByDate(dateKey) ? 1 : 0;
@@ -126,9 +126,18 @@ export function initCalendarArchive() {
   const selectedTitle = qs("#selected-output-title");
   const selectedCount = qs("#selected-output-count");
   const selectedDetail = qs("#selected-output-detail");
+  const downloadModal = qs("#download-modal");
+  const downloadCancelButton = qs("#download-cancel-button");
+  const downloadModeButtons = qsa("[data-download-mode]");
   const viewButtons = qsa("[data-calendar-view]");
   const prevButton = qs("[data-calendar-prev]");
   const nextButton = qs("[data-calendar-next]");
+  let pendingDownloadOutput = null;
+
+  function closeDownloadModal() {
+    downloadModal.classList.add("hidden");
+    pendingDownloadOutput = null;
+  }
 
   viewButtons.forEach((button) => {
     button.addEventListener("click", () => setCalendarView(button.dataset.calendarView));
@@ -146,7 +155,21 @@ export function initCalendarArchive() {
     const target = event.target.closest("[data-download-output]");
     if (!target) return;
     const output = getOutputByDate(target.dataset.downloadOutput);
-    if (output) downloadOutput(output);
+    if (!output) return;
+    pendingDownloadOutput = output;
+    downloadModal.classList.remove("hidden");
+  });
+
+  downloadCancelButton.addEventListener("click", closeDownloadModal);
+  downloadModal.addEventListener("click", (event) => {
+    if (event.target === downloadModal) closeDownloadModal();
+  });
+  downloadModeButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      if (!pendingDownloadOutput) return;
+      downloadOutput(pendingDownloadOutput, button.dataset.downloadMode);
+      closeDownloadModal();
+    });
   });
 
   subscribe(({ calendarView, focusedDateKey, selectedDateKey }) => {

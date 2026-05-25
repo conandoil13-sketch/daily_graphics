@@ -1,15 +1,17 @@
-import { initCalendarArchive } from "./components/calendarArchive.js?v=6";
-import { initCategorySelector } from "./components/categorySelector.js?v=6";
-import { initComposer } from "./components/composer.js?v=6";
-import { initDayLifecycle } from "./components/dayLifecycle.js?v=6";
-import { initEntriesList } from "./components/entriesList.js?v=6";
-import { initNavigation } from "./components/navigation.js?v=6";
-import { initProfile } from "./components/profile.js?v=6";
-import { initPreview } from "./components/preview.js?v=6";
+import { initCalendarArchive } from "./components/calendarArchive.js?v=8";
+import { initCategorySelector } from "./components/categorySelector.js?v=8";
+import { initComposer } from "./components/composer.js?v=8";
+import { initCustomSelects } from "./components/customSelect.js?v=8";
+import { initDayLifecycle } from "./components/dayLifecycle.js?v=8";
+import { initEntriesList } from "./components/entriesList.js?v=8";
+import { initNavigation } from "./components/navigation.js?v=8";
+import { initProfile } from "./components/profile.js?v=8";
+import { initPreview } from "./components/preview.js?v=8";
 
 initNavigation();
 initDayLifecycle();
 initCategorySelector();
+initCustomSelects();
 initComposer();
 initEntriesList();
 initPreview();

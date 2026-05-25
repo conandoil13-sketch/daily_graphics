@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f7f7f4" />
     <title>Daily Graphic Prototype</title>
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./styles.css?v=8" />
   </head>
   <body>
     <div class="splash-screen" id="splash-screen" aria-label="앱 로딩 중">
@@ -89,11 +89,17 @@
                 <label for="mood">감정상태 <span>선택</span></label>
                 <select id="mood">
                   <option value="">선택 안 함</option>
-                  <option>차분함</option>
-                  <option>피곤함</option>
                   <option>기쁨</option>
+                  <option>슬픔</option>
+                  <option>분노</option>
                   <option>불안</option>
-                  <option>복잡함</option>
+                  <option>평온</option>
+                  <option>설렘</option>
+                  <option>피곤</option>
+                  <option>집중</option>
+                  <option>혼란</option>
+                  <option>만족</option>
+                  <option>외로움</option>
                   <option>무감각</option>
                 </select>
               </div>
@@ -294,9 +300,40 @@
             <button class="primary-action finish-confirm" type="button" id="finish-confirm-button">완료 저장</button>
           </section>
         </div>
+
+        <div class="modal-backdrop hidden" id="download-modal" role="dialog" aria-modal="true" aria-labelledby="download-title">
+          <section class="finish-sheet download-sheet">
+            <div class="section-heading compact">
+              <h2 id="download-title">PNG 저장 옵션</h2>
+              <button class="text-button" type="button" id="download-cancel-button">취소</button>
+            </div>
+            <div class="download-options">
+              <button class="download-option primary-download-option" type="button" data-download-mode="single">
+                <strong>싱글 이미지</strong>
+                <span>1000 x 1000 원본 그래픽</span>
+              </button>
+              <button class="download-option" type="button" data-download-mode="tile-2">
+                <strong>2 x 2 타일</strong>
+                <span>원본을 4분할 반복</span>
+              </button>
+              <button class="download-option" type="button" data-download-mode="rotate-2">
+                <strong>2 x 2 회전대칭</strong>
+                <span>90도 단위 회전 배치</span>
+              </button>
+              <button class="download-option" type="button" data-download-mode="tile-4">
+                <strong>4 x 4 타일</strong>
+                <span>16분할 패턴 반복</span>
+              </button>
+              <button class="download-option" type="button" data-download-mode="rotate-4">
+                <strong>4 x 4 회전대칭</strong>
+                <span>격자형 회전 패턴</span>
+              </button>
+            </div>
+          </section>
+        </div>
       </section>
     </main>
 
-    <script type="module" src="./src/app.js?v=6"></script>
+    <script type="module" src="./src/app.js?v=8"></script>
   </body>
 </html>

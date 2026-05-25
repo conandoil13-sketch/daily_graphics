@@ -1,5 +1,5 @@
-import { qs } from "../dom.js?v=6";
-import { getTodayEntries, subscribe } from "../state.js?v=6";
+import { qs } from "../dom.js?v=8";
+import { getTodayEntries, subscribe } from "../state.js?v=8";
 
 function entryTemplate(entry, index) {
   return `

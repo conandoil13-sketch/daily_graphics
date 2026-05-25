@@ -1,6 +1,6 @@
-import { qs } from "../dom.js?v=6";
-import { finishToday } from "./dayLifecycle.js?v=6";
-import { addEntry, getKoreaTodayKey, resetEntries, state } from "../state.js?v=6";
+import { qs } from "../dom.js?v=8";
+import { finishToday } from "./dayLifecycle.js?v=8";
+import { addEntry, getKoreaTodayKey, resetEntries, state } from "../state.js?v=8";
 
 export function initComposer() {
   const valueInput = qs("#metric-value");
@@ -40,6 +40,7 @@ export function initComposer() {
 
     valueInput.value = "";
     moodInput.value = "";
+    moodInput.dispatchEvent(new Event("change", { bubbles: true }));
   }
 
   addButton.addEventListener("click", submitEntry);
@@ -53,6 +54,7 @@ export function initComposer() {
     }
     valueInput.value = "";
     moodInput.value = "";
+    moodInput.dispatchEvent(new Event("change", { bubbles: true }));
     closeFinishModal();
   });
   outputNameInput.addEventListener("keydown", (event) => {
@@ -61,6 +63,7 @@ export function initComposer() {
   resetButton.addEventListener("click", () => {
     valueInput.value = "";
     moodInput.value = "";
+    moodInput.dispatchEvent(new Event("change", { bubbles: true }));
     resetEntries();
   });
 

@@ -1,5 +1,5 @@
-import { qs, qsa } from "../dom.js?v=6";
-import { getOutputDates, subscribe } from "../state.js?v=6";
+import { qs, qsa } from "../dom.js?v=8";
+import { getOutputDates, subscribe } from "../state.js?v=8";
 
 const DETAILS = {
   "profile-name": {
