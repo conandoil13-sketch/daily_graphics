@@ -1,0 +1,180 @@
+<svg width="1600" height="1200" viewBox="0 0 1600 1200" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">LOG 작동 로직 맵</title>
+  <desc id="desc">일상의 기록이 날짜, 행위, 수치, 단위, 감정을 지나 좌표, 밀도, 색상 스펙트럼, 후처리 규칙으로 변환되는 과정</desc>
+  <defs>
+    <style>
+      .font { font-family: Pretendard, "Noto Sans KR", "Apple SD Gothic Neo", Arial, sans-serif; }
+      .brand { font-size: 44px; font-weight: 900; fill: #050505; letter-spacing: 0; }
+      .kicker { font-size: 17px; font-weight: 900; fill: #4AB633; letter-spacing: 0; }
+      .headline { font-size: 46px; font-weight: 900; fill: #050505; letter-spacing: 0; }
+      .lead { font-size: 18px; font-weight: 700; fill: #4B4B44; letter-spacing: 0; }
+      .no { font-size: 16px; font-weight: 900; fill: #050505; letter-spacing: 0; }
+      .cardTitle { font-size: 28px; font-weight: 900; fill: #4AB633; letter-spacing: 0; }
+      .darkText { font-size: 16px; font-weight: 750; fill: #F6F3EA; letter-spacing: 0; }
+      .darkSub { font-size: 14px; font-weight: 700; fill: #D9D7CC; letter-spacing: 0; }
+      .lightTitle { font-size: 24px; font-weight: 900; fill: #050505; letter-spacing: 0; }
+      .lightText { font-size: 15px; font-weight: 750; fill: #4B4B44; letter-spacing: 0; }
+      .chip { font-size: 14px; font-weight: 900; fill: #050505; letter-spacing: 0; }
+      .chipMuted { font-size: 13px; font-weight: 800; fill: #5F5D54; letter-spacing: 0; }
+      .footer { font-size: 16px; font-weight: 850; fill: #F6F3EA; letter-spacing: 0; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="1200" fill="#F2EFE6"/>
+
+  <g class="font">
+    <g transform="translate(64 58)">
+      <text x="0" y="58" class="brand">LOG</text>
+      <text x="118" y="58" class="kicker">데일리 그래픽스 / 작동 로직 맵</text>
+      <text x="0" y="128" class="headline">입력값은 결정론적 픽셀 알고리즘으로 변환됩니다</text>
+      <text x="0" y="172" class="lead">일상의 기록은 날짜, 행위, 수치, 단위, 감정을 지나 좌표, 밀도, 색상 스펙트럼, 후처리 규칙으로 변환됩니다.</text>
+    </g>
+
+    <g transform="translate(1280 84)">
+      <rect x="0" y="0" width="176" height="16" rx="8" fill="#B3EA6C"/>
+      <rect x="0" y="28" width="230" height="16" rx="8" fill="#5DE23D"/>
+      <rect x="0" y="56" width="132" height="16" rx="8" fill="#F26464"/>
+    </g>
+
+    <g transform="translate(64 280)">
+      <rect x="0" y="0" width="330" height="350" rx="22" fill="#2F3431" stroke="#D8D8CF" stroke-width="2"/>
+      <circle cx="38" cy="38" r="20" fill="#F2EFE6"/>
+      <text x="38" y="44" text-anchor="middle" class="no">01</text>
+      <text x="36" y="96" class="cardTitle">입력 파라미터</text>
+      <text x="36" y="134" class="darkText">사용자가 입력한 하루의 최소 단위.</text>
+      <text x="36" y="158" class="darkText">마감 전까지는 원본 로그로 유지됩니다.</text>
+      <g transform="translate(36 202)">
+        <rect x="0" y="0" width="126" height="42" rx="11" fill="#F8F6EE"/>
+        <text x="17" y="27" class="chip">행위</text>
+        <rect x="140" y="0" width="96" height="42" rx="11" fill="#F8F6EE"/>
+        <text x="157" y="27" class="chip">수치</text>
+        <rect x="0" y="58" width="96" height="42" rx="11" fill="#F8F6EE"/>
+        <text x="17" y="85" class="chip">단위</text>
+        <rect x="110" y="58" width="96" height="42" rx="11" fill="#F8F6EE"/>
+        <text x="127" y="85" class="chip">감정</text>
+        <rect x="0" y="116" width="142" height="42" rx="11" fill="#F26464"/>
+        <text x="17" y="143" class="chip">날짜 시드</text>
+      </g>
+    </g>
+
+    <path d="M420 455H486" stroke="#30302B" stroke-width="5" stroke-linecap="round"/>
+    <path d="M474 438L494 455L474 472" stroke="#30302B" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <g transform="translate(520 280)">
+      <rect x="0" y="0" width="330" height="350" rx="22" fill="#2F3431" stroke="#D8D8CF" stroke-width="2"/>
+      <circle cx="38" cy="38" r="20" fill="#F2EFE6"/>
+      <text x="38" y="44" text-anchor="middle" class="no">02</text>
+      <text x="36" y="96" class="cardTitle">숫자 시그니처</text>
+      <text x="36" y="134" class="darkText">수치값에서 숫자만 추출해</text>
+      <text x="36" y="158" class="darkText">시각적 파라미터로 분해합니다.</text>
+      <rect x="36" y="196" width="258" height="58" rx="14" fill="#F8F6EE"/>
+      <text x="58" y="232" class="lightTitle">7324 -&gt; 끝 두 자리 24</text>
+      <text x="38" y="288" class="darkText">자리수 4 / 숫자합 16 / 전체값 7324</text>
+      <line x1="38" y1="306" x2="292" y2="306" stroke="#63675F"/>
+      <text x="38" y="331" class="darkSub">끝 두 자리 = 좌표 / 자리수 = 레이어</text>
+      <text x="38" y="350" class="darkSub">숫자합 = 채도 / 전체값 = 왜곡 강도</text>
+    </g>
+
+    <path d="M876 455H942" stroke="#30302B" stroke-width="5" stroke-linecap="round"/>
+    <path d="M930 438L950 455L930 472" stroke="#30302B" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <g transform="translate(976 280)">
+      <rect x="0" y="0" width="560" height="350" rx="22" fill="#2F3431" stroke="#D8D8CF" stroke-width="2"/>
+      <circle cx="38" cy="38" r="20" fill="#F2EFE6"/>
+      <text x="38" y="44" text-anchor="middle" class="no">03</text>
+      <text x="36" y="96" class="cardTitle">카테고리 규칙 엔진</text>
+      <text x="36" y="134" class="darkText">행위 카테고리는 픽셀을 생성하는 기본 알고리즘 모듈을 선택합니다.</text>
+      <g transform="translate(36 178)">
+        <rect x="0" y="0" width="150" height="54" rx="13" fill="#F8F6EE"/>
+        <text x="18" y="32" class="chip">이동</text>
+        <text x="78" y="32" class="chipMuted">선</text>
+        <rect x="168" y="0" width="150" height="54" rx="13" fill="#F8F6EE"/>
+        <text x="186" y="32" class="chip">식사</text>
+        <text x="246" y="32" class="chipMuted">면</text>
+        <rect x="336" y="0" width="150" height="54" rx="13" fill="#F8F6EE"/>
+        <text x="354" y="32" class="chip">대화</text>
+        <text x="414" y="32" class="chipMuted">반사</text>
+        <rect x="0" y="74" width="150" height="54" rx="13" fill="#F8F6EE"/>
+        <text x="18" y="106" class="chip">작업</text>
+        <text x="78" y="106" class="chipMuted">격자</text>
+        <rect x="168" y="74" width="150" height="54" rx="13" fill="#F8F6EE"/>
+        <text x="186" y="106" class="chip">휴식</text>
+        <text x="246" y="106" class="chipMuted">컷팅</text>
+        <rect x="336" y="74" width="150" height="54" rx="13" fill="#F8F6EE"/>
+        <text x="354" y="106" class="chip">상태</text>
+        <text x="414" y="106" class="chipMuted">왜곡</text>
+      </g>
+    </g>
+
+    <g transform="translate(64 704)">
+      <rect x="0" y="0" width="620" height="246" rx="22" fill="#F8F6EE" stroke="#D8D8CF" stroke-width="2"/>
+      <circle cx="38" cy="40" r="20" fill="#2F3431"/>
+      <text x="38" y="46" text-anchor="middle" font-size="16" font-weight="900" fill="#F8F6EE">04</text>
+      <text x="78" y="48" class="lightTitle">감정 + 색상 스펙트럼</text>
+      <text x="78" y="84" class="lightText">감정은 색상 범위를 열고, 카테고리 역할과 단위 보정이 톤을 조절합니다.</text>
+      <g transform="translate(78 122)">
+        <rect x="0" y="0" width="78" height="76" rx="14" fill="#B3EA6C"/>
+        <rect x="92" y="0" width="78" height="76" rx="14" fill="#577FAF"/>
+        <rect x="184" y="0" width="78" height="76" rx="14" fill="#8C6BB8"/>
+        <rect x="276" y="0" width="78" height="76" rx="14" fill="#F26464"/>
+        <rect x="368" y="0" width="78" height="76" rx="14" fill="#5DE23D"/>
+      </g>
+      <text x="78" y="224" class="lightText">감정 범위 -&gt; 색상/채도/명도 · 역할 보정 -&gt; 톤 · 단위 -&gt; 미세 변주</text>
+    </g>
+
+    <path d="M708 826H798" stroke="#30302B" stroke-width="5" stroke-linecap="round"/>
+    <path d="M786 809L806 826L786 843" stroke="#30302B" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <g transform="translate(832 704)">
+      <rect x="0" y="0" width="704" height="246" rx="22" fill="#2F3431" stroke="#D8D8CF" stroke-width="2"/>
+      <circle cx="40" cy="40" r="20" fill="#F2EFE6"/>
+      <text x="40" y="46" text-anchor="middle" class="no">05</text>
+      <text x="80" y="48" class="cardTitle">100 x 100 그리드 -&gt; 1000 x 1000 PNG</text>
+      <text x="80" y="84" class="darkText">활성 픽셀만 압축 저장하고, 다운로드 시 선택한 방식으로 다시 렌더링합니다.</text>
+      <text x="80" y="132" class="darkText">브라우저 저장소</text>
+      <text x="80" y="158" class="darkText">기록 -&gt; 출력물</text>
+      <text x="80" y="184" class="darkText">달력 아카이브</text>
+      <rect x="492" y="54" width="142" height="142" rx="10" fill="#F8F6EE"/>
+      <g stroke="#C7C9C0" opacity="0.75">
+        <path d="M506 54V196M520 54V196M534 54V196M548 54V196M562 54V196M576 54V196M590 54V196M604 54V196M618 54V196"/>
+        <path d="M492 68H634M492 82H634M492 96H634M492 110H634M492 124H634M492 138H634M492 152H634M492 166H634M492 180H634"/>
+      </g>
+      <rect x="520" y="82" width="14" height="14" fill="#30302B"/>
+      <rect x="534" y="82" width="14" height="14" fill="#5DE23D"/>
+      <rect x="548" y="82" width="14" height="14" fill="#30302B"/>
+      <rect x="520" y="96" width="14" height="14" fill="#5DE23D"/>
+      <rect x="534" y="96" width="14" height="14" fill="#30302B"/>
+      <rect x="548" y="96" width="14" height="14" fill="#5DE23D"/>
+    </g>
+
+    <g transform="translate(64 994)">
+      <rect x="0" y="0" width="1472" height="92" rx="28" fill="#F8F6EE" stroke="#D8D8CF" stroke-width="2"/>
+      <text x="32" y="38" class="lightTitle">다운로드 모드</text>
+      <text x="32" y="68" class="lightText">PNG 저장은 원본 그래픽을 다섯 가지 출력 레이아웃으로 재조합합니다.</text>
+      <g transform="translate(590 20)">
+        <rect x="0" y="0" width="112" height="52" rx="14" fill="#DFF7C3"/>
+        <text x="18" y="31" class="chip">1x</text>
+        <text x="50" y="31" class="chipMuted">싱글</text>
+        <rect x="130" y="0" width="122" height="52" rx="14" fill="#FFFFFF" stroke="#E2E2DA"/>
+        <text x="148" y="31" class="chip">4</text>
+        <text x="180" y="31" class="chipMuted">2×2 타일</text>
+        <rect x="270" y="0" width="132" height="52" rx="14" fill="#FFFFFF" stroke="#E2E2DA"/>
+        <text x="288" y="31" class="chip">R4</text>
+        <text x="326" y="31" class="chipMuted">2×2 회전</text>
+        <rect x="420" y="0" width="122" height="52" rx="14" fill="#FFFFFF" stroke="#E2E2DA"/>
+        <text x="438" y="31" class="chip">16</text>
+        <text x="478" y="31" class="chipMuted">4×4 타일</text>
+        <rect x="560" y="0" width="132" height="52" rx="14" fill="#FFFFFF" stroke="#E2E2DA"/>
+        <text x="578" y="31" class="chip">R16</text>
+        <text x="622" y="31" class="chipMuted">4×4 회전</text>
+      </g>
+    </g>
+
+    <g transform="translate(64 1120)">
+      <rect x="0" y="0" width="1472" height="50" rx="25" fill="#050505"/>
+      <text x="30" y="32" class="footer">결정적이지만 가변적인 시스템: 같은 입력은 같은 그래픽으로 재현되고, 작은 차이는 고유한 픽셀 변주로 남습니다.</text>
+      <rect x="1320" y="17" width="58" height="16" rx="8" fill="#F26464"/>
+      <rect x="1392" y="17" width="72" height="16" rx="8" fill="#5DE23D"/>
+    </g>
+  </g>
+</svg>
