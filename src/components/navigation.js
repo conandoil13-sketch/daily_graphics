@@ -1,5 +1,5 @@
-import { qsa } from "../dom.js?v=8";
-import { setSelectedView, subscribe } from "../state.js?v=8";
+import { qsa } from "../dom.js?v=11";
+import { setSelectedView, subscribe } from "../state.js?v=11";
 
 const titles = {
   record: "오늘의 기록",

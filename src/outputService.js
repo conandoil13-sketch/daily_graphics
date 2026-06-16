@@ -1,4 +1,4 @@
-import { compactGrid, expandGrid, generateGrid, renderGridToCanvas } from "./graphics/pixelRules.js?v=8";
+import { compactGrid, expandGrid, generateGrid, renderGridToCanvas } from "./graphics/pixelRules.js?v=11";
 
 export function createOutput(entries, dateKey, name) {
   if (!entries.length) return null;

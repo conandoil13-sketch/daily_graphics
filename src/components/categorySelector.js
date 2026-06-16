@@ -1,5 +1,5 @@
-import { qsa, qs } from "../dom.js?v=8";
-import { inputMetaByCategory, setCategory, subscribe, unitsByCategory } from "../state.js?v=8";
+import { qsa, qs } from "../dom.js?v=11";
+import { inputMetaByCategory, setCategory, subscribe, unitsByCategory } from "../state.js?v=11";
 
 export function initCategorySelector() {
   const categoryInput = qs("#category");

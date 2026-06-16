@@ -195,6 +195,12 @@ function fillCircle(grid, cx, cy, radius, color = INK) {
   });
 }
 
+function fillDiamond(grid, cx, cy, radius, color = INK) {
+  return grid.map((cell) => {
+    return Math.abs(cell.x - cx) + Math.abs(cell.y - cy) <= radius ? { ...cell, active: true, color } : cell;
+  });
+}
+
 function fillPolygon(grid, points, color = INK) {
   function inside(x, y) {
     let hit = false;
@@ -240,6 +246,64 @@ function applyVectorDrift(grid, direction) {
   return next;
 }
 
+function driftBandOffset(cell, direction, maxShift, bands) {
+  const axis = direction === "LEFT" || direction === "RIGHT" ? cell.x : cell.y;
+  const ratio = axis / (GRID_SIZE - 1);
+  const band = Math.min(bands - 1, Math.floor(ratio * bands));
+  const bandRatio = bands <= 1 ? 1 : band / (bands - 1);
+  const eased = bandRatio * bandRatio * (3 - 2 * bandRatio);
+  return Math.round(eased * maxShift);
+}
+
+function nearestOpenCell(grid, x, y, maxRadius = 2) {
+  for (let radius = 1; radius <= maxRadius; radius += 1) {
+    for (let dy = -radius; dy <= radius; dy += 1) {
+      for (let dx = -radius; dx <= radius; dx += 1) {
+        if (Math.abs(dx) !== radius && Math.abs(dy) !== radius) continue;
+        const nx = x + dx;
+        const ny = y + dy;
+        if (nx < 0 || nx >= GRID_SIZE || ny < 0 || ny >= GRID_SIZE) continue;
+        if (!grid[ny * GRID_SIZE + nx].active) return { x: nx, y: ny };
+      }
+    }
+  }
+  return null;
+}
+
+function writeDriftedCell(next, x, y, cell) {
+  const targetX = clamp(Math.round(x), 0, GRID_SIZE - 1);
+  const targetY = clamp(Math.round(y), 0, GRID_SIZE - 1);
+  const target = next[targetY * GRID_SIZE + targetX];
+  if (!target.active) {
+    write(next, targetX, targetY, cell.color);
+    return;
+  }
+
+  const open = nearestOpenCell(next, targetX, targetY);
+  if (open) write(next, open.x, open.y, cell.color);
+}
+
+function applyGradientDrift(grid, direction, maxShift = 4, bands = 8) {
+  const next = emptyGrid();
+  const sign = direction === "LEFT" || direction === "UP" ? -1 : 1;
+  const active = grid.filter((cell) => cell.active);
+  const sorted = active.sort((a, b) => {
+    if (direction === "RIGHT") return b.x - a.x;
+    if (direction === "LEFT") return a.x - b.x;
+    if (direction === "DOWN") return b.y - a.y;
+    return a.y - b.y;
+  });
+
+  sorted.forEach((cell) => {
+    const shift = driftBandOffset(cell, direction, maxShift, bands) * sign;
+    const x = direction === "LEFT" || direction === "RIGHT" ? cell.x + shift : cell.x;
+    const y = direction === "UP" || direction === "DOWN" ? cell.y + shift : cell.y;
+    writeDriftedCell(next, x, y, cell);
+  });
+
+  return next;
+}
+
 function applyFlowDistort(grid, strength, frequency) {
   const next = emptyGrid();
   grid.forEach((cell) => {
@@ -262,12 +326,115 @@ function applyMirror(grid, axis) {
   return next;
 }
 
+function applyQuadrantReplication(grid, quadrantIndex) {
+  const half = GRID_SIZE / 2;
+  const sourceOffsetX = (quadrantIndex % 2) * half;
+  const sourceOffsetY = quadrantIndex >= 2 ? half : 0;
+  const next = emptyGrid();
+
+  for (let localY = 0; localY < half; localY += 1) {
+    for (let localX = 0; localX < half; localX += 1) {
+      const source = grid[(sourceOffsetY + localY) * GRID_SIZE + (sourceOffsetX + localX)];
+      if (!source.active) continue;
+      for (let quadrant = 0; quadrant < 4; quadrant += 1) {
+        const x = (quadrant % 2) * half + localX;
+        const y = (quadrant >= 2 ? half : 0) + localY;
+        write(next, x, y, source.color);
+      }
+    }
+  }
+
+  return next;
+}
+
+function applyRadialSymmetry(grid, segments) {
+  const next = emptyGrid();
+  const center = (GRID_SIZE - 1) / 2;
+  grid.forEach((cell) => {
+    if (!cell.active) return;
+    const dx = cell.x - center;
+    const dy = cell.y - center;
+    for (let step = 0; step < segments; step += 1) {
+      const angle = (Math.PI * 2 * step) / segments;
+      const x = Math.round(center + dx * Math.cos(angle) - dy * Math.sin(angle));
+      const y = Math.round(center + dx * Math.sin(angle) + dy * Math.cos(angle));
+      write(next, x, y, cell.color);
+    }
+  });
+  return next;
+}
+
+function joySegmentCount(entry, rng) {
+  const digits = numberSignature(entry?.value);
+  const complexity = digits.length + Math.min(4, Math.floor(digits.sum / 10)) + (digits.raw.length > 1 ? 1 : 0);
+  let index = complexity <= 3 ? 0 : complexity <= 5 ? 1 : complexity <= 8 ? 2 : 3;
+  const seedNudge = rng();
+  if (seedNudge > 0.92 && index < 3) index += 1;
+  if (seedNudge < 0.08 && index > 0) index -= 1;
+  return [4, 6, 8, 12][index];
+}
+
+function activeCountInQuadrant(grid, quadrantIndex) {
+  const half = GRID_SIZE / 2;
+  const sourceOffsetX = (quadrantIndex % 2) * half;
+  const sourceOffsetY = quadrantIndex >= 2 ? half : 0;
+  let count = 0;
+
+  for (let localY = 0; localY < half; localY += 1) {
+    for (let localX = 0; localX < half; localX += 1) {
+      if (grid[(sourceOffsetY + localY) * GRID_SIZE + (sourceOffsetX + localX)].active) count += 1;
+    }
+  }
+
+  return count;
+}
+
+function pickRestQuadrant(grid, preferredIndex) {
+  const preferredCount = activeCountInQuadrant(grid, preferredIndex);
+  if (preferredCount > 0) return preferredIndex;
+
+  return [0, 1, 2, 3].reduce((best, current) => {
+    return activeCountInQuadrant(grid, current) > activeCountInQuadrant(grid, best) ? current : best;
+  }, preferredIndex);
+}
+
+function activeCount(grid) {
+  return grid.reduce((count, cell) => count + (cell.active ? 1 : 0), 0);
+}
+
 function applyFrameCut(grid, cx, cy, radius, invert = false) {
   return grid.map((cell) => {
     const inside = Math.hypot(cell.x - cx, cell.y - cy) <= radius;
     const keep = invert ? !inside : inside;
     return keep ? cell : { ...cell, active: false, color: PAPER };
   });
+}
+
+function fillSquare(grid, cx, cy, radius, color = INK) {
+  return grid.map((cell) => {
+    return Math.abs(cell.x - cx) <= radius && Math.abs(cell.y - cy) <= radius ? { ...cell, active: true, color } : cell;
+  });
+}
+
+function applyRestCrop(grid, shape, cx, cy, radius) {
+  const bandWidth = Math.max(10, Math.round(radius * 1.25));
+  return grid.map((cell) => {
+    let inside = false;
+    if (shape === "circle") inside = Math.hypot(cell.x - cx, cell.y - cy) <= radius;
+    else if (shape === "diamond") inside = Math.abs(cell.x - cx) + Math.abs(cell.y - cy) <= radius;
+    else if (shape === "square") inside = Math.abs(cell.x - cx) <= radius && Math.abs(cell.y - cy) <= radius;
+    else if (shape === "band-horizontal") inside = Math.abs(cell.y - cy) <= bandWidth;
+    else inside = Math.abs(cell.x - cx) <= bandWidth;
+    return inside ? cell : { ...cell, active: false, color: PAPER };
+  });
+}
+
+function fillRestBase(grid, shape, cx, cy, radius, color) {
+  if (shape === "diamond") return fillDiamond(grid, cx, cy, radius, color);
+  if (shape === "square") return fillSquare(grid, cx, cy, Math.max(8, Math.round(radius * 0.72)), color);
+  if (shape === "band-horizontal") return fillLine(grid, { x: 0, y: cy }, { x: GRID_SIZE, y: cy }, Math.max(8, radius), color);
+  if (shape === "band-vertical") return fillLine(grid, { x: cx, y: 0 }, { x: cx, y: GRID_SIZE }, Math.max(8, radius), color);
+  return fillCircle(grid, cx, cy, radius, color);
 }
 
 function digitsFromValue(value) {
@@ -355,16 +522,34 @@ function applyWork(grid, entry, rng, color, secondaryColor) {
   const gap = Math.max(6, Math.min(20, 7 + (digits.lastTwo % 12) + unitNudge(entry.unit, "work-gap").position));
   let next = applyModuloMesh(grid, gap, color);
   if (digits.length > 2) next = applyStepSampler(next, 9 + Math.floor(rng() * 14), secondaryColor);
-  return applyVectorDrift(next, ["UP", "DOWN", "LEFT", "RIGHT"][Math.floor(rng() * 4)]);
+  return applyGradientDrift(next, ["UP", "DOWN", "LEFT", "RIGHT"][Math.floor(rng() * 4)], 3 + Math.floor(rng() * 3), 8);
 }
 
-function applyRest(grid, entry, rng, color) {
+function applyRest(grid, entry, rng, color, dateKey) {
   const digits = digitsFromValue(entry.value);
-  const cx = mapWithUnit(digits.lastTwo, entry.unit, "rest-x");
-  const cy = mapWithUnit((digits.number + 53) % 100, entry.unit, "rest-y");
-  const radius = 18 + Math.min(22, digits.length * 4);
-  const base = grid.some((cell) => cell.active) ? grid : fillCircle(grid, cx, cy, radius, color);
-  return applyFrameCut(base, cx, cy, radius, rng() > 0.45);
+  const dateRng = createRng(`${dateKey}|rest|${entry.category}`);
+  const mode = dateRng() < 0.6 ? "echo" : "crop";
+  const preferredQuadrant = Math.floor(dateRng() * 4);
+  const cropShapes = ["circle", "diamond", "square", "band-horizontal", "band-vertical"];
+  const cropShape = cropShapes[Math.floor(dateRng() * cropShapes.length)];
+  const half = GRID_SIZE / 2;
+  const offsetX = (preferredQuadrant % 2) * half;
+  const offsetY = preferredQuadrant >= 2 ? half : 0;
+  const radius = mode === "echo" ? 7 + Math.min(13, digits.length * 3) : 18 + Math.min(20, digits.length * 4);
+  const localX = mapWithUnit(digits.lastTwo, entry.unit, "rest-x", mode === "echo" ? 10 : 18, mode === "echo" ? 39 : 82);
+  const localY = mapWithUnit((digits.number + 53) % 100, entry.unit, "rest-y", mode === "echo" ? 10 : 18, mode === "echo" ? 39 : 82);
+  const cx = mode === "echo" ? offsetX + localX : localX;
+  const cy = mode === "echo" ? offsetY + localY : localY;
+  const hasBase = grid.some((cell) => cell.active);
+  const base = hasBase ? grid : fillRestBase(grid, cropShape, cx, cy, radius, color);
+
+  if (mode === "echo") return applyQuadrantReplication(base, pickRestQuadrant(base, preferredQuadrant));
+
+  const cropped = applyRestCrop(base, cropShape, cx, cy, radius);
+  const croppedCount = activeCount(cropped);
+  if (!croppedCount) return base;
+  if (hasBase && croppedCount < activeCount(base) * 0.18) return applyStepSampler(base, 31 + Math.floor(rng() * 8), color);
+  return cropped;
 }
 
 function applyState(grid, entry, rng, color) {
@@ -378,15 +563,16 @@ function applyState(grid, entry, rng, color) {
   });
 }
 
-function applyMood(grid, mood, rng) {
+function applyMood(grid, entry, rng) {
+  const mood = entry.mood;
   if (!mood) return grid;
   if (mood === "평온" || mood === "차분함") return applyMirror(grid, "vertical");
-  if (mood === "슬픔") return applyVectorDrift(applyFrameCut(grid, 50, 58, 42, false), "DOWN");
+  if (mood === "슬픔") return applyGradientDrift(applyFrameCut(grid, 50, 58, 42, false), "DOWN", 4, 10);
   if (mood === "분노") return applyFlowDistort(applyStepSampler(grid, 18 + Math.floor(rng() * 7), MID), 4, 0.32);
-  if (mood === "기쁨") return applyMirror(applyMirror(grid, "vertical"), "horizontal");
+  if (mood === "기쁨") return applyRadialSymmetry(grid, joySegmentCount(entry, rng));
   if (mood === "설렘") return applyStepSampler(applyMirror(grid, rng() > 0.5 ? "vertical" : "horizontal"), 28 + Math.floor(rng() * 12), SOFT);
-  if (mood === "피곤" || mood === "피곤함") return applyVectorDrift(grid, "DOWN");
-  if (mood === "집중") return applyVectorDrift(grid, rng() > 0.5 ? "UP" : "RIGHT");
+  if (mood === "피곤" || mood === "피곤함") return applyGradientDrift(grid, "DOWN", 3, 8);
+  if (mood === "집중") return applyGradientDrift(grid, rng() > 0.5 ? "UP" : "RIGHT", 4, 9);
   if (mood === "불안") return applyFlowDistort(grid, 7, 0.21);
   if (mood === "혼란" || mood === "복잡함") return applyStepSampler(grid, 24 + Math.floor(rng() * 10), MID);
   if (mood === "만족") return applyMirror(grid, "horizontal");
@@ -412,9 +598,9 @@ export function generateGrid(entries, dateKey) {
     else if (entry.category === "식사") grid = applyMeal(grid, entry, rng, primaryColor, secondaryColor);
     else if (entry.category === "대화") grid = applyConversation(grid, entry, rng, primaryColor);
     else if (entry.category === "작업") grid = applyWork(grid, entry, rng, primaryColor, secondaryColor);
-    else if (entry.category === "휴식") grid = applyRest(grid, entry, rng, primaryColor);
+    else if (entry.category === "휴식") grid = applyRest(grid, entry, rng, primaryColor, dateKey);
     else if (entry.category === "상태") grid = applyState(grid, entry, rng, primaryColor);
-    grid = applyMood(grid, entry.mood, rng);
+    grid = applyMood(grid, entry, rng);
   });
   return grid;
 }
