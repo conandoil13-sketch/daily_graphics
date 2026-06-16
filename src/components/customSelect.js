@@ -1,4 +1,4 @@
-import { qsa } from "../dom.js?v=11";
+import { qsa } from "../dom.js?v=12";
 
 function optionLabel(select, value) {
   const option = Array.from(select.options).find((item) => item.value === value);

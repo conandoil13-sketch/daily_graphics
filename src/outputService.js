@@ -1,8 +1,9 @@
-import { compactGrid, expandGrid, generateGrid, renderGridToCanvas } from "./graphics/pixelRules.js?v=11";
+import { compactGrid, expandGrid, generateGrid, renderGridToCanvas } from "./graphics/pixelRules.js?v=12";
+import { getRenderSeed } from "./seed.js?v=12";
 
 export function createOutput(entries, dateKey, name) {
   if (!entries.length) return null;
-  const grid = generateGrid(entries, dateKey);
+  const grid = generateGrid(entries, getRenderSeed(dateKey));
   const categories = Array.from(new Set(entries.map((entry) => entry.category)));
   return {
     dateKey,

@@ -1,4 +1,4 @@
-import { qs, qsa } from "../dom.js?v=11";
+import { qs, qsa } from "../dom.js?v=12";
 import {
   getKoreaTodayKey,
   getOutputByDate,
@@ -7,7 +7,7 @@ import {
   setFocusedDate,
   state,
   subscribe,
-} from "../state.js?v=11";
+} from "../state.js?v=12";
 import {
   formatKoreanDate,
   formatTitle,
@@ -18,8 +18,8 @@ import {
   movePeriod,
   parseDateKey,
   toDateKey,
-} from "../calendarModel.js?v=11";
-import { downloadOutput, renderOutputToCanvas } from "../outputService.js?v=11";
+} from "../calendarModel.js?v=12";
+import { downloadOutput, renderOutputToCanvas } from "../outputService.js?v=12";
 
 function outputCount(dateKey) {
   return getOutputByDate(dateKey) ? 1 : 0;

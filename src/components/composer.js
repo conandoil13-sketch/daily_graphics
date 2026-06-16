@@ -1,6 +1,6 @@
-import { qs } from "../dom.js?v=11";
-import { finishToday } from "./dayLifecycle.js?v=11";
-import { addEntry, getKoreaTodayKey, resetEntries, state } from "../state.js?v=11";
+import { qs } from "../dom.js?v=12";
+import { finishToday } from "./dayLifecycle.js?v=12";
+import { addEntry, getKoreaTodayKey, resetEntries, state } from "../state.js?v=12";
 
 export function initComposer() {
   const valueInput = qs("#metric-value");
